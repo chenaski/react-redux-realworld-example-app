@@ -37,7 +37,7 @@ build:
     - npm run build
   artifacts:
     paths:
-      - build
+      - REACT_APP_BACKEND_URL=$API_URL build
     expire_in: 1 week
 
 deploy:
