@@ -34,10 +34,10 @@ build:
     - .default-cache
   stage: build
   script:
-    - npm run build
+    - REACT_APP_BACKEND_URL=$API_URL npm run build
   artifacts:
     paths:
-      - REACT_APP_BACKEND_URL=$API_URL build
+      - build
     expire_in: 1 week
 
 deploy:
