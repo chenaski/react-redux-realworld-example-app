@@ -33,9 +33,4 @@ jobs:
 
       - name: Copy files to the server
         run: |
-          rsync -a --progress --human-readable --delete \
-            --exclude-from '.gitignore' \
-            --exclude .gitignore \
-            --exclude .git \
-            --exclude public \
-            build/** deploy@IP:~/realworld/public
+          rsync -a --progress --human-readable --delete build/** deploy@IP:~/realworld/public
