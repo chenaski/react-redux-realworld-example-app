@@ -37,7 +37,7 @@ jobs:
       - name: Archive build
         uses: actions/upload-artifact@v2
         env:
-          REACT_APP_API_URL: ${{ secrets.API_URL }}
+          REACT_APP_BACKEND_URL: ${{ secrets.API_URL }}
         with:
           name: build
           path: build
