@@ -30,10 +30,13 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build.yml
           name: build
-          path: .
+          path: ~/artifacts
+
+      - name: Dirs tree
+        run: ls
 
       - name: Copy files to the server
         env:
           IP: ${{ secrets.IP }}
         run: |
-          rsync -a --progress --human-readable --delete build/** deploy@$IP:~/realworld/public
+          rsync -a --progress --human-readable --delete ~/artifacts/build/** deploy@$IP:~/realworld/public
