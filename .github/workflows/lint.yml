@@ -19,11 +19,9 @@ jobs:
 
       - name: Cache NodeJS modules
         uses: actions/cache@v2
-        env:
-          cache-name: npm-${{ hashFiles('package-lock.json') }}
         with:
           path: ~/.npm
-          key: ${{ env.cache-name }}
+          key: npm-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-
 
       - name: Install dependencies
@@ -42,11 +40,9 @@ jobs:
 
       - name: Cache NodeJS modules
         uses: actions/cache@v2
-        env:
-          cache-name: npm-${{ hashFiles('package-lock.json') }}
         with:
           path: ~/.npm
-          key: ${{ env.cache-name }}
+          key: npm-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-
 
       - name: Install dependencies
