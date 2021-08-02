@@ -23,7 +23,7 @@ jobs:
           cache-name: npm-${{ hashFiles('package-lock.json') }}
         with:
           path: ~/.npm
-          key: npm-${{ env.cache-name }}
+          key: ${{ env.cache-name }}
           restore-keys: npm-
 
       - name: Install dependencies
@@ -46,7 +46,7 @@ jobs:
           cache-name: npm-${{ hashFiles('package-lock.json') }}
         with:
           path: ~/.npm
-          key: npm-${{ env.cache-name }}
+          key: ${{ env.cache-name }}
           restore-keys: npm-
 
       - name: Install dependencies
