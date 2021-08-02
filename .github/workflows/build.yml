@@ -12,10 +12,12 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    container:
-      image: node:16-alpine
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
 
       - name: Cache NodeJS modules
         uses: actions/cache@v2
