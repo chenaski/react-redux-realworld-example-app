@@ -27,7 +27,7 @@ jobs:
           restore-keys: npm-
 
       - name: Install dependencies
-        run: npm ci --cache .npm --prefer-offline --no-audit
+        run: npm ci --prefer-offline --no-audit
 
       - name: Lint source code with ESLint
         run: npm run lint
@@ -50,7 +50,7 @@ jobs:
           restore-keys: npm-
 
       - name: Install dependencies
-        run: npm ci --cache .npm --prefer-offline --no-audit
+        run: npm ci --prefer-offline --no-audit
 
       - name: Lint source code with Prettier
         run: npm run check:format
