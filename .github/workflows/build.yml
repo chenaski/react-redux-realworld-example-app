@@ -32,12 +32,12 @@ jobs:
         run: npm ci --prefer-offline --no-audit
 
       - name: Build
+        env:
+          REACT_APP_BACKEND_URL: ${{ secrets.API_URL }}
         run: npm run build
 
       - name: Archive build
         uses: actions/upload-artifact@v2
-        env:
-          REACT_APP_BACKEND_URL: ${{ secrets.API_URL }}
         with:
           name: build
           path: build
