@@ -18,19 +18,18 @@ jobs:
         env:
           IP: ${{ secrets.IP }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ecdsa
           chmod 600 ~/.ssh/id_ecdsa
-          echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+          ssh-keyscan -t ecdsa -H $IP >> ~/.ssh/known_hosts
 
       - name: Download build artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: build
-          name: build.yml
+          workflow: build.yml
+          name: build
 
       - name: Copy files to the server
         run: |
