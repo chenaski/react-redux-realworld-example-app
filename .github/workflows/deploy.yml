@@ -32,9 +32,6 @@ jobs:
           name: build
           path: build
 
-      - name: Dirs tree
-        run: ls
-
       - name: Copy files to the server
         env:
           IP: ${{ secrets.IP }}
