@@ -30,6 +30,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build.yml
           name: build
+          path: .
 
       - name: Copy files to the server
         env:
