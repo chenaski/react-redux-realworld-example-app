@@ -63,5 +63,14 @@ jobs:
           IP: ${{ secrets.IP }}
           BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          ssh deploy@$IP "mkdir -p ~/app/$BRANCH_NAME/public"
-          rsync -a --progress --human-readable --delete build/** deploy@$IP:~/app/$BRANCH_NAME/public
+          ssh deploy@$APP_HOST "mkdir -p ~/app/$BRANCH_NAME/public"
+          rsync -a --progress --human-readable --delete build/** deploy@$APP_HOST:~/app/$BRANCH_NAME/public
+
+      - name: Post preview app URL
+        if: success()
+        uses: mshick/add-pr-comment@v1
+        env:
+          REVIEW_APP_URL: http://${{ github.head_ref }}.${{ secrets.APP_URL }}
+        with:
+          message: New review app created at ${{ REVIEW_APP_URL }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
