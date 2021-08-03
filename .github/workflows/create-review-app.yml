@@ -1,0 +1,65 @@
+name: Create review app
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Cache NodeJS modules
+        uses: actions/cache@v2
+        env:
+          cache-name: npm-${{ hashFiles('package-lock.json') }}
+        with:
+          path: ~/.npm
+          key: ${{ env.cache-name }}
+          restore-keys: npm-
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Build
+        env:
+          REACT_APP_BACKEND_URL: http://${{ github.head_ref }}-${{ secrets.API_URL }}
+        run: npm run build
+
+      - name: Archive build
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        env:
+          IP: ${{ secrets.IP }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ecdsa
+          chmod 600 ~/.ssh/id_ecdsa
+          ssh-keyscan -t ecdsa -H $IP >> ~/.ssh/known_hosts
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: build
+
+      - name: Copy files to the server
+        env:
+          IP: ${{ secrets.IP }}
+          BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          rsync -a --progress --human-readable --delete build/** deploy@$IP:~/app/$BRANCH_NAME/public
