@@ -63,4 +63,5 @@ jobs:
           IP: ${{ secrets.IP }}
           BRANCH_NAME: ${{ github.head_ref }}
         run: |
+          ssh deploy@$IP "mkdir -p ~/app/$BRANCH_NAME/public"
           rsync -a --progress --human-readable --delete build/** deploy@$IP:~/app/$BRANCH_NAME/public
