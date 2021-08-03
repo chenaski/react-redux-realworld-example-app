@@ -34,7 +34,7 @@ build:
     - .default-cache
   stage: build
   script:
-    - REACT_APP_BACKEND_URL=$API_URL npm run build
+    - REACT_APP_BACKEND_URL=$APP_API_URL npm run build
   artifacts:
     paths:
       - build
@@ -47,5 +47,5 @@ deploy:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
-    - ssh-keyscan -t ecdsa -H $IP >> ~/.ssh/known_hosts
-    - rsync -a --progress --human-readable --delete build/** deploy@$IP:~/realworld/public
+    - ssh-keyscan -t ecdsa -H $APP_HOST >> ~/.ssh/known_hosts
+    - rsync -a --progress --human-readable --delete build/** deploy@$APP_HOST:~/realworld/public

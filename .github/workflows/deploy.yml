@@ -16,13 +16,13 @@ jobs:
     steps:
       - name: Setup SSH
         env:
-          IP: ${{ secrets.IP }}
+          API_HOST: ${{ secrets.API_HOST }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ecdsa
           chmod 600 ~/.ssh/id_ecdsa
-          ssh-keyscan -t ecdsa -H $IP >> ~/.ssh/known_hosts
+          ssh-keyscan -t ecdsa -H $API_HOST >> ~/.ssh/known_hosts
 
       - name: Download build artifact
         uses: dawidd6/action-download-artifact@v2
@@ -34,6 +34,6 @@ jobs:
 
       - name: Copy files to the server
         env:
-          IP: ${{ secrets.IP }}
+          API_HOST: ${{ secrets.API_HOST }}
         run: |
-          rsync -a --progress --human-readable --delete build/** deploy@$IP:~/realworld/public
+          rsync -a --progress --human-readable --delete build/** deploy@$API_HOST:~/realworld/public
