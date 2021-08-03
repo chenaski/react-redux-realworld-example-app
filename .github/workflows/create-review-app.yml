@@ -72,5 +72,5 @@ jobs:
         env:
           REVIEW_APP_URL: http://${{ github.head_ref }}.${{ secrets.APP_URL }}
         with:
-          message: New review app created at ${{ REVIEW_APP_URL }}
+          message: New review app created at ${{ env.REVIEW_APP_URL }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
