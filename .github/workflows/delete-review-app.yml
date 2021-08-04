@@ -1,0 +1,28 @@
+name: Delete review app
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  delete:
+    name: Delete
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        env:
+          APP_HOST: ${{ secrets.APP_HOST }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ecdsa
+          chmod 600 ~/.ssh/id_ecdsa
+          ssh-keyscan -t ecdsa -H $APP_HOST >> ~/.ssh/known_hosts
+
+      - name: Delete files from the server
+        env:
+          APP_HOST: ${{ secrets.APP_HOST }}
+          BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          ssh deploy@$APP_HOST "rm -rf ~/app/$BRANCH_NAME/public"
