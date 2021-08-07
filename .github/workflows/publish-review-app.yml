@@ -1,0 +1,85 @@
+name: Publish review app
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Ref name
+        required: true
+      dest:
+        description: Dir name where to deploy
+        required: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Cache NodeJS modules
+        uses: actions/cache@v2
+        env:
+          cache-name: npm-${{ hashFiles('package-lock.json') }}
+        with:
+          path: ~/.npm
+          key: ${{ env.cache-name }}
+          restore-keys: npm-
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Build
+        env:
+          REACT_APP_BACKEND_URL: http://${{ github.event.inputs.dest }}.${{ secrets.APP_API_URL }}
+        run: npm run build
+
+      - name: Archive build
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        env:
+          APP_HOST: ${{ secrets.APP_HOST }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ecdsa
+          chmod 600 ~/.ssh/id_ecdsa
+          ssh-keyscan -t ecdsa -H $APP_HOST >> ~/.ssh/known_hosts
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: build
+
+      - name: Copy files to the server
+        env:
+          APP_HOST: ${{ secrets.APP_HOST }}
+          DEST_DIR: ${{ github.event.inputs.dest }}
+        run: |
+          ssh deploy@$APP_HOST "mkdir -p ~/app/$DEST_DIR/public"
+          rsync -a --progress --human-readable --delete build/** deploy@$APP_HOST:~/app/$DEST_DIR/public
+
+      - name: Post preview app URL
+        if: success()
+        uses: mshick/add-pr-comment@v1
+        env:
+          REVIEW_APP_URL: http://${{ github.event.inputs.dest }}.${{ secrets.APP_URL }}
+        with:
+          message: New review app created at ${{ env.REVIEW_APP_URL }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
