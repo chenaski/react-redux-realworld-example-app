@@ -36,8 +36,6 @@ prettier:
     - npm run check:format
 
 build:
-  extends:
-    - .default-cache
   stage: build
   variables:
     REACT_APP_BACKEND_URL: http://$CI_COMMIT_REF_SLUG.$APP_HOST/api
