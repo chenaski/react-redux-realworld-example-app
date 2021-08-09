@@ -54,7 +54,7 @@ deploy:
     DEPLOY_DEST_DIR: /home/$SSH_USER/app/$CI_COMMIT_REF_SLUG/public
   script:
     - ssh $SSH_USER@$SSH_HOST mkdir -p $DEPLOY_DEST_DIR
-    - rsync build/* $SSH_USER@$SSH_HOST:$DEPLOY_DEST_DIR
+    - scp -r build/* $SSH_USER@$SSH_HOST:$DEPLOY_DEST_DIR
   environment:
     name: production
     url: http://$CI_COMMIT_REF_SLUG.$SSH_HOST/
@@ -71,7 +71,7 @@ create_review_app:
     CREATE_BRANCH_URL: https://gitlab.com/api/v4/projects/$BACKEND_PROJECT_ID/repository/branches?branch=$CI_COMMIT_REF_NAME&ref=$CI_DEFAULT_BRANCH
     TRIGGER_PIPELINE_URL: https://gitlab.com/api/v4/projects/$BACKEND_PROJECT_ID/pipeline?ref=CI_COMMIT_REF_NAME
   script:
-    - rsync build/* $SSH_USER@$SSH_HOST:$DEPLOY_DEST_DIR
+    - scp -r build/* $SSH_USER@$SSH_HOST:$DEPLOY_DEST_DIR
     - 'status_code=$(curl -I --header "PRIVATE_TOKEN: $PAT_TOKEN" --write-out "%{http_code}" --silent --output /dev/null "$BRANCH_EXISTS_URL")'
     - '[[ "$status_code" -ne 204 ]] && status_code=$(curl -I --header "PRIVATE_TOKEN: $PAT_TOKEN" --write-out "%{http_code}" --silent --output /dev/null "$CREATE_BRANCH_URL")'
     - '[[ "$status_code" -ne 400 ]] && echo "Branch already exists" && exit 0'
