@@ -38,7 +38,7 @@ prettier:
 build:
   stage: build
   variables:
-    REACT_APP_BACKEND_URL: http://$CI_COMMIT_REF_SLUG.$APP_HOST.nip.io/api
+    REACT_APP_BACKEND_URL: http://$CI_COMMIT_REF_SLUG.$APP_HOST/api
   script:
     - npm run build
   artifacts:
