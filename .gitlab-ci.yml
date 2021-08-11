@@ -81,7 +81,7 @@ create_review_app:
     url: http://$CI_COMMIT_REF_SLUG.$SSH_HOST/
     on_stop: remove_review_app
   rules:
-    - if: $CI_MERGE_REQUEST_TITLE =~ /[SKIP REVIEW]/
+    - if: $CI_MERGE_REQUEST_TITLE =~ /\[SKIP REVIEW\]/
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
@@ -97,7 +97,7 @@ remove_review_app:
   script:
     - ssh $SSH_USER@$SSH_HOST pm2 delete ~/$DEPLOY_DEST_DIR/current/ecosystem.config.js
   rules:
-    - if: $CI_MERGE_REQUEST_TITLE =~ /[SKIP REVIEW]/
+    - if: $CI_MERGE_REQUEST_TITLE =~ /\[SKIP REVIEW\]/
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
@@ -112,7 +112,7 @@ reset_db:
   script:
     - ssh $SSH_USER@$SSH_HOST cd $DEPLOY_DEST_DIR/current/bin/create-db-copy.sh $DB_NAME
   rules:
-    - if: $CI_MERGE_REQUEST_TITLE =~ /[SKIP REVIEW]/
+    - if: $CI_MERGE_REQUEST_TITLE =~ /\[SKIP REVIEW\]/
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
