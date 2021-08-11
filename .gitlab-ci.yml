@@ -90,8 +90,9 @@ remove_review_app:
     action: stop
   variables:
     DEPLOY_DEST_DIR: /home/$SSH_USER/app/$CI_COMMIT_REF_SLUG
+    DB_NAME: $CI_COMMIT_REF_SLUG
   script:
-    - ssh $SSH_USER@$SSH_HOST pm2 delete $DEPLOY_DEST_DIR/current/ecosystem.config.js
+    - ssh $SSH_USER@$SSH_HOST DB_NAME=$DB_NAME pm2 delete $DEPLOY_DEST_DIR/current/ecosystem.config.js
   rules:
     - if: $CI_MERGE_REQUEST_TITLE =~ /\[SKIP REVIEW\]/
       when: never
