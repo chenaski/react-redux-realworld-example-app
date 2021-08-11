@@ -69,7 +69,7 @@ create_review_app:
     DEPLOY_DEST_DIR: /home/$SSH_USER/app/$CI_COMMIT_REF_SLUG/current/public
     BRANCH_EXISTS_URL: https://gitlab.com/api/v4/projects/$BACKEND_PROJECT_ID/repository/branches/$CI_COMMIT_REF_NAME
     CREATE_BRANCH_URL: https://gitlab.com/api/v4/projects/$BACKEND_PROJECT_ID/repository/branches?branch=$CI_COMMIT_REF_NAME&ref=$CI_DEFAULT_BRANCH
-    TRIGGER_PIPELINE_URL: https://gitlab.com/api/v4/projects/$BACKEND_PROJECT_ID/pipeline?ref=CI_COMMIT_REF_NAME
+    TRIGGER_PIPELINE_URL: https://gitlab.com/api/v4/projects/$BACKEND_PROJECT_ID/pipeline?ref=$CI_COMMIT_REF_NAME
   script:
     - scp -r build/* $SSH_USER@$SSH_HOST:$DEPLOY_DEST_DIR
     - 'status_code=$(curl -I --header "PRIVATE-TOKEN: $PAT_TOKEN" --write-out "%{http_code}" --silent --output /dev/null "$BRANCH_EXISTS_URL")'
