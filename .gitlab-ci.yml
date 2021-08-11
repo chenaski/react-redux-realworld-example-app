@@ -57,7 +57,7 @@ deploy:
     - scp -r build/* $SSH_USER@$SSH_HOST:$DEPLOY_DEST_DIR
   environment:
     name: production
-    url: http://$CI_COMMIT_REF_SLUG.$SSH_HOST/
+    url: http://$CI_COMMIT_REF_SLUG.$APP_HOST/
 
 create_review_app:
   stage: review
@@ -74,7 +74,7 @@ create_review_app:
     - 'curl -X POST --header "PRIVATE-TOKEN: $PAT_TOKEN" --write-out "%{http_code}" --silent --output /dev/null "$TRIGGER_PIPELINE_URL"'
   environment:
     name: review/$CI_COMMIT_REF_NAME
-    url: http://$CI_COMMIT_REF_SLUG.$SSH_HOST/
+    url: http://$CI_COMMIT_REF_SLUG.$APP_HOST/
     on_stop: remove_review_app
   rules:
     - if: $CI_MERGE_REQUEST_TITLE =~ /\[SKIP REVIEW\]/
