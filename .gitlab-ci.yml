@@ -58,6 +58,9 @@ build:
       .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 push_latest:
   stage: push
@@ -118,9 +121,9 @@ remove_review_app:
     GIT_STRATEGY: none
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-      - docker stack rm $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-      - docker rmi $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-      - rm -rf ~/deploy/$CI_COMMIT_REF_SLUG
+    - docker stack rm $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker rmi $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - rm -rf ~/deploy/$CI_COMMIT_REF_SLUG
   rules:
     - if: $CI_MERGE_REQUEST_TITLE =~ /\[SKIP REVIEW\]/
       when: never
