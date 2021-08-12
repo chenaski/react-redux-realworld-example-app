@@ -4,7 +4,7 @@ ARG BACKEND_URL
 
 WORKDIR /app
 
-COPY package*.json .
+COPY package*.json ./
 
 RUN npm ci --no-audit
 
